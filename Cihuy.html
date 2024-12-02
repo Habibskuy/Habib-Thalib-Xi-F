@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Pendidikan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #87CEEB, #FF6347, #FFD700); /* Gradient background edukatif */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        h1 {
+            color: #333;
+            text-transform: uppercase;
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            color: #333;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .options button:hover {
+            background-color: #ddd;
+        }
+        .correct {
+            background-color: #4caf50; /* Green for correct */
+            color: white;
+        }
+        .incorrect {
+            background-color: #f44336; /* Red for incorrect */
+            color: white;
+        }
+        .feedback {
+            font-size: 18px;
+            margin-top: 10px;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .transition-slide {
+            animation: slideEffect 1s ease-in-out;
+        }
+        @keyframes slideEffect {
+            0% {
+                transform: translateX(100%);
+                background-color: #87CEEB; /* Blue */
+            }
+            25% {
+                background-color: #FF6347; /* Red */
+            }
+            50% {
+                background-color: #FFD700; /* Yellow */
+            }
+            100% {
+                transform: translateX(0);
+                background-color: #fff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kuis Pendidikan</h1>
+        <div id="quiz">
+            <div class="question" id="question"></div>
+            <div class="options" id="options"></div>
+        </div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // Data soal
+        const quizData = [
+            // Matematika
+            {
+                question: "Berapa hasil dari 5 + 7?",
+                options: ["11", "12", "13", "14"],
+                answer: "12"
+            },
+            {
+                question: "Berapa hasil dari 8 x 6?",
+                options: ["48", "54", "56", "60"],
+                answer: "48"
+            },
+            {
+                question: "Jika x = 5, berapa nilai dari 3x + 2?",
+                options: ["15", "17", "18", "20"],
+                answer: "17"
+            },
+            {
+                question: "Berapa akar kuadrat dari 64?",
+                options: ["6", "7", "8", "9"],
+                answer: "8"
+            },
+            {
+                question: "Berapa hasil dari 100 ÷ 5?",
+                options: ["15", "20", "25", "30"],
+                answer: "20"
+            },
+            // Biologi
+            {
+                question: "Apa yang dimaksud dengan metabolisme sel?",
+                options: [
+                    "Proses pembuatan energi dalam sel",
+                    "Proses pembelahan sel",
+                    "Proses pembentukan protein",
+                    "Proses pernapasan dalam sel"
+                ],
+                answer: "Proses pembuatan energi dalam sel"
+            },
+            {
+                question: "Bagaimana cara fotosintesis pada tumbuhan?",
+                options: [
+                    "Menggunakan cahaya untuk menghasilkan oksigen",
+                    "Menggunakan oksigen untuk menghasilkan glukosa",
+                    "Menggunakan cahaya untuk menghasilkan glukosa",
+                    "Menghasilkan karbon dioksida untuk tumbuh"
+                ],
+                answer: "Menggunakan cahaya untuk menghasilkan glukosa"
+            },
+            {
+                question: "Apa yang dimaksud dengan DNA?",
+                options: [
+                    "Senyawa yang mengatur pertumbuhan sel",
+                    "Senyawa yang membawa informasi genetik",
+                    "Senyawa yang mengatur pernapasan sel",
+                    "Senyawa yang membuat sel berkembang"
+                ],
+                answer: "Senyawa yang membawa informasi genetik"
+            },
+            {
+                question: "Bagaimana struktur sel tumbuhan?",
+                options: [
+                    "Memiliki dinding sel, kloroplas, dan vakuola besar",
+                    "Memiliki dinding sel, kloroplas, dan sitoplasma",
+                    "Memiliki membran sel dan inti sel",
+                    "Memiliki nukleus dan mitokondria"
+                ],
+                answer: "Memiliki dinding sel, kloroplas, dan vakuola besar"
+            },
+            {
+                question: "Apa fungsi dari mitokondria?",
+                options: [
+                    "Membantu proses fotosintesis",
+                    "Menghasilkan energi dalam bentuk ATP",
+                    "Menghasilkan protein",
+                    "Mengatur pembelahan sel"
+                ],
+                answer: "Menghasilkan energi dalam bentuk ATP"
+            },
+            // Soal Umum
+            {
+                question: "Siapa Presiden pertama Indonesia?",
+                options: ["Soeharto", "Habibie", "Soekarno", "Jokowi"],
+                answer: "Soekarno"
+            },
+            {
+                question: "Apa ibu kota Indonesia?",
+                options: ["Jakarta", "Bandung", "Surabaya", "Medan"],
+                answer: "Jakarta"
+            },
+            {
+                question: "Berapa panjang garis khatulistiwa?",
+                options: ["40.075 km", "30.075 km", "50.075 km", "60.075 km"],
+                answer: "40.075 km"
+            },
+            {
+                question: "Apa warna bendera Jepang?",
+                options: ["Merah dan Putih", "Hijau dan Putih", "Merah dan Biru", "Putih dan Biru"],
+                answer: "Merah dan Putih"
+            },
+            {
+                question: "Apa planet terbesar di tata surya?",
+                options: ["Mars", "Jupiter", "Saturnus", "Bumi"],
+                answer: "Jupiter"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        // Fungsi untuk menampilkan soal
+        function loadQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+
+            if (currentQuestion < quizData.length) {
+                const currentQuiz = quizData[currentQuestion];
+                questionElement.textContent = currentQuiz.question;
+                optionsElement.innerHTML = "";
+
+                currentQuiz.options.forEach(option => {
+                    const button = document.createElement("button");
+                    button.textContent = option;
+                    button.onclick = () => checkAnswer(option, button);
+                    optionsElement.appendChild(button);
+                });
+
+                // Menambahkan transisi slide pada elemen quiz
+                document.getElementById("quiz").classList.add("transition-slide");
+            } else {
+                showResult();
+            }
+        }
+
+        // Fungsi untuk memeriksa jawaban
+        function checkAnswer(selectedOption, button) {
+            const currentQuiz = quizData[currentQuestion];
+            if (selectedOption === currentQuiz.answer) {
+                score++;
+                button.classList.add("correct");
+                button.innerHTML = "Benar!";
+            } else {
+                button.classList.add("incorrect");
+                button.innerHTML = "Salah!";
+            }
+            // Menunggu sebelum pindah ke soal berikutnya
+            setTimeout(() => {
+                currentQuestion++;
+                loadQuestion();
+            }, 1000);  // Delay 1 detik untuk efek
+        }
+
+        // Fungsi untuk menampilkan hasil
+        function showResult() {
+            document.getElementById("quiz").style.display = "none";
+            const resultElement = document.getElementById("result");
+            resultElement.textContent = `Kuis selesai! Skor Anda: ${score} dari ${quizData.length}`;
+        }
+
+        // Mulai kuis
+        loadQuestion();
+    </script>
+</body>
+</html>
